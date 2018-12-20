@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+metadata:
+  name: grafana-dashboard
+    component: grafana
+spec:
+  replicas: 1
+  template:
+    metadata:
+        component: grafana
+    spec:
+      selector:
+        component: grafana 
+      serviceAccountName: dashboard-watcher
+      containers:
+      - image: grafana/grafana:5.2.2
+        name: grafana-core
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 100m
+            memory: 300Mi
+          reuests:
+            cpu: 100m
+            memory: 300Mi
+        env:
+          - name: GF_AUTH_ANONYMOUS_ENABLED
+            value: "true"
+          - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+            value: Admin
+#          - name: GF_SERVER_ROOT_URL
+#            value: "%(protocol)s://%(domain)s/api/v1/namespaces/{{ .Release.Namespace}}/services/{{ template "flokkr.fullname" . }}-grafana:web/proxy/"
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 3000
+        volumeMounts:
+        - name: dashboard-provisioning
+          mountPath: /etc/grafana/provisioning/dashboards
+        - name: datasource-provisioning
+          mountPath: /etc/grafana/provisioning/datasources
+        - name: dashboards
+          mountPath: /etc/dashboards
+      - image: flokkr/kubernetes-launcher
+        name: dashboard-watcher
+        imagePullPolicy: Always
+        volumeMounts:
+         - name: dashboards
+           mountPath: /etc/dashboards
+        args: ["/go/bin/kubernetes-launcher","-labels","flokkr.github.io/grafana=dashboard","-destination","/etc/dashboards","-namespace","default"]
+      volumes:
+        - name: dashboard-provisioning
+          configMap:
+             name: grafana-dashboards
+        - name: datasource-provisioning
+          configMap:
+             name: grafana-datasources
+        - name: dashboards
+          emptyDir: {}

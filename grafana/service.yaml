@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "flokkr.fullname" . }}-grafana
+  labels:
+{{ include "flokkr.commonlabels" . | indent 6}}
+spec:
+  ports:
+  - port: 3000
+    name: web
+  selector:
+  selector:
+     app: {{ template "flokkr.fullname" . }}
+     component: grafana  
+

@@ -1,0 +1,14 @@
+- type: Change
+  mode: helm
+  path:
+  - spec
+  - template
+  - spec
+  - "*"
+  - "*"
+  - env
+  - WAITFOR
+  - value
+  value:
+    pattern: (.*)
+    replacement: "{{ template \"fullname\" . }}-$1"
