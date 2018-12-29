@@ -1,0 +1,3 @@
+import:
+    - path: ../../../hdfs
+    - path: ../../../yarn
