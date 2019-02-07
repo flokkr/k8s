@@ -1,5 +1,4 @@
 apiVersion: v1
-
 kind: ConfigMap
 metadata:
   name: yarn-config
@@ -31,7 +30,7 @@ data:
   CAPACITY-SCHEDULER.XML_yarn.scheduler.capacity.queue-mappings-override.enable: "false"
   CORE-SITE.XML_dfs.data.transfer.protection: "authentication"
   CORE-SITE.XML_hadoop.security.authentication: "kerberos"
-  CORE-SITE.XML_hadoop.security.auth_to_local: "RULE:[2:$1@$0](.*)s/.*/root/"
+  CORE-SITE.XML_hadoop.security.auth_to_local: "RULE:[2:$1@$0](.*)s/.*/hadoop/"
   SSL-SERVER.XML_ssl.server.keystore.location: "/opt/hadoop/etc/hadoop/hadoop.keystore"
   SSL-SERVER.XML_ssl.server.keystore.password: "Welcome1"
   SSL-SERVER.XML_ssl.server.keystore.keypassword: "Welcome1"
