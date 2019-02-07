@@ -1,0 +1,33 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: yarn-nodemanager
+spec:
+  serviceName: yarn-nodemanager
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  template:
+    metadata:
+      labels:
+        app: yarn
+        component: nodemanager
+    spec:
+      containers:
+        - name: yarn-nodemanager
+          image: flokkr/hadoop
+          args:
+            - yarn
+            - nodemanager
+          envFrom:
+            - configMapRef:
+                name: yarn-config
+            - configMapRef:
+                name: hdfs-config
+          volumeMounts:
+            - name: "data"
+              mountPath: "/data"
+      volumes:
+        - name: "data"
+          emptyDir: {}
