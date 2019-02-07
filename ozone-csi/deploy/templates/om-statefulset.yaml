@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "ozone.fullname" . }}-om
+  labels:
+    apps.kubernetes.io/name: {{ include "ozone.name" . }}
+    helm.sh/chart: {{ include "ozone.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations: {}
+spec:
+  selector:
+    matchLabels:
+      app: ozone
+      component: om
+  serviceName: {{ template "ozone.fullname" . }}-om
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "28942"
+      labels:
+        app: ozone
+        component: om
+    spec:
+      initContainers:
+        - name: init
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          args:
+            - ozone
+            - om
+            - --init
+          env:
+            - name: "WAITFOR"
+              value: "{{ template "ozone.fullname" . }}-scm-0.{{ template "ozone.fullname" . }}-scm:9876"
+          volumeMounts:
+            - name: "data"
+              mountPath: "/data"
+          envFrom:
+            - configMapRef:
+                name: {{ template "ozone.fullname" . }}-config
+      containers:
+        - name: om
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          args:
+            - ozone
+            - om
+          env:
+            - name: "WAITFOR"
+              value: "{{ template "ozone.fullname" . }}-scm-0.{{ template "ozone.fullname" . }}-scm:9876"
+            - name: "PROMETHEUSJMX_ENABLED"
+              value: "true"
+            - name: "PROMETHEUSJMX_AGENTOPTS"
+              value: "port=28942"
+          volumeMounts:
+            - name: "data"
+              mountPath: "/data"
+          envFrom:
+            - configMapRef:
+                name: {{ template "ozone.fullname" . }}-config
+      volumes:
+        - name: "data"
+          emptyDir: {}

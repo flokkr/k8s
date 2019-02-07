@@ -1,0 +1,114 @@
+kind: DaemonSet
+apiVersion: apps/v1beta2
+metadata:
+  name: csi-s3
+  labels: {}
+  annotations: {}
+  namespace: ozone
+spec:
+  selector:
+    matchLabels:
+      app: csi-s3
+  template:
+    metadata:
+      labels:
+        app: csi-s3
+      annotations: {}
+    spec:
+      serviceAccount: csi-s3
+      hostNetwork: true
+      containers:
+        - name: driver-registrar
+          image: quay.io/k8scsi/driver-registrar:v0.4.1
+          args:
+            - --v=4
+            - --csi-address=$(ADDRESS)
+            - --kubelet-registration-path=/var/lib/kubelet/plugins/ch.ctrox.csi.s3-driver/csi.sock
+          env:
+            - name: "ADDRESS"
+              value: "/csi/csi.sock"
+            - name: "KUBE_NODE_NAME"
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /csi
+            - name: registration-dir
+              mountPath: /registration/
+          envFrom: []
+        - name: csi-s3
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+            allowPrivilegeEscalation: true
+          image: ctrox/csi-s3:1.0.1-alpha
+          args:
+            - --endpoint=$(CSI_ENDPOINT)
+            - --nodeid=$(NODE_ID)
+            - --access-key-id=$(ACCESS_KEY_ID)
+            - --secret-access-key=$(SECRET_ACCESS_KEY)
+            - --s3-endpoint=$(S3_ENDPOINT)
+            - --region=$(REGION)
+            - --encryption-key=$(ENCRYPTION_KEY)
+            - --v=4
+          env:
+            - name: "CSI_ENDPOINT"
+              value: "unix:///csi/csi.sock"
+            - name: "NODE_ID"
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: "ACCESS_KEY_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: csi-s3-secret
+                  key: accessKeyID
+            - name: "SECRET_ACCESS_KEY"
+              valueFrom:
+                secretKeyRef:
+                  name: csi-s3-secret
+                  key: secretAccessKey
+            - name: "S3_ENDPOINT"
+              valueFrom:
+                secretKeyRef:
+                  name: csi-s3-secret
+                  key: endpoint
+            - name: "REGION"
+              valueFrom:
+                secretKeyRef:
+                  name: csi-s3-secret
+                  key: region
+            - name: "ENCRYPTION_KEY"
+              valueFrom:
+                secretKeyRef:
+                  name: csi-s3-secret
+                  key: encryptionKey
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /csi
+            - name: pods-mount-dir
+              mountPath: /var/lib/kubelet/pods
+              mountPropagation: Bidirectional
+            - name: fuse-device
+              mountPath: /dev/fuse
+          envFrom: []
+      volumes:
+        - name: plugin-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins/ch.ctrox.csi.s3-driver
+            type: DirectoryOrCreate
+        - name: registration-dir
+          hostPath:
+            path: /var/lib/kubelet/plugins/
+            type: DirectoryOrCreate
+        - name: pods-mount-dir
+          hostPath:
+            path: /var/lib/kubelet/pods
+            type: Directory
+        - name: fuse-device
+          hostPath:
+            path: /dev/fuse

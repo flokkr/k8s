@@ -1,0 +1,11 @@
+- type: Add
+  path:
+    - spec
+    - template
+    - spec
+    - ".*"
+    - ".*"
+    - envFrom
+  value:
+    - configMapRef:
+        name: config
