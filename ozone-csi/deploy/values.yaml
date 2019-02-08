@@ -1,5 +1,0 @@
-image:
-  repository: elek/ozone
-  tag: latest
-  pullpolicy: Always
-component: {}
