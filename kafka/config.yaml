@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-config
+data:
+  SERVER.CFG_zookeeper.connect: zookeeper-0.zookeeper:2181,zookeeper-1.zookeeper:2181,zookeeper-2.zookeeper:2181
+  SERVER.CFG_num.partitions: 1
+  SERVER.CFG_broker.id: 1
+  SERVER.CFG_log.dir: /data/kafkalog
+  SERVER.CFG_offsets.topic.replication.factor: 1
+  
