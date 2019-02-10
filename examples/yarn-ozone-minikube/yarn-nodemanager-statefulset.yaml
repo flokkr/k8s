@@ -1,0 +1,50 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: yarn-nodemanager
+spec:
+  serviceName: yarn-nodemanager
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  template:
+    metadata:
+      labels:
+        app: yarn
+        component: nodemanager
+    spec:
+      containers:
+        - name: yarn-nodemanager
+          image: flokkr/hadoop
+          args:
+            - yarn
+            - nodemanager
+          envFrom:
+            - configMapRef:
+                name: yarn-config
+            - configMapRef:
+                name: config
+          volumeMounts:
+            - name: "data"
+              mountPath: "/data"
+            - name: ozonelib
+              mountPath: /opt/ozonelib
+          env:
+            - name: "HADOOP_CLASSPATH"
+              value: "/opt/ozonelib/hadoop-ozone-filesystem-lib-legacy.jar"
+      volumes:
+        - name: "data"
+          emptyDir: {}
+        - name: ozonelib
+          emptyDir: {}
+      initContainers:
+        - name: ozone-lib
+          image: quay.io/ozonedev/ozone:test
+          args:
+            - cp
+            - /opt/hadoop/share/ozone/lib/*legacy*.jar
+            - /opt/ozonelib/hadoop-ozone-filesystem-lib-legacy.jar
+          volumeMounts:
+            - name: ozonelib
+              mountPath: /opt/ozonelib

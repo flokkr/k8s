@@ -1,0 +1,65 @@
+import:
+    - path: ../../../ozone
+      transformations:
+          - type: Image
+            image: quay.io/ozonedev/ozone:test
+    - path: ../../../yarn
+      transformations:
+          - type: Add
+            path:
+                - spec
+                - template
+                - spec
+                - initContainers
+            value:
+               name: ozone-lib 
+               image: quay.io/ozonedev/ozone:test
+               args:
+                   - cp
+                   - /opt/hadoop/share/ozone/lib/*legacy*.jar
+                   - /opt/ozonelib/hadoop-ozone-filesystem-lib-legacy.jar
+               volumeMounts:
+                 - name: ozonelib
+                   mountPath: /opt/ozonelib
+          - type: Add
+            path:
+                - spec
+                - template
+                - spec
+                - volumes
+            value:
+                name: ozonelib
+                emptyDir: {}
+          - type: Add
+            path:
+              - spec
+              - template
+              - spec
+              - containers
+              - ".*"
+              - volumeMounts
+            value:
+                name: ozonelib
+                mountPath: /opt/ozonelib
+          - type: Add 
+            path:
+              - spec
+              - template
+              - spec
+              - containers
+              - ".*"
+              - env
+            value:
+              name: HADOOP_CLASSPATH
+              value: /opt/ozonelib/hadoop-ozone-filesystem-lib-legacy.jar
+          - type: Add
+            path:
+              - spec
+              - template
+              - spec
+              - containers
+              - ".*"
+              - envFrom
+            value:
+               configMapRef:
+                   name: config
