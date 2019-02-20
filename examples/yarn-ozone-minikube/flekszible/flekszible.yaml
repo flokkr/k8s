@@ -2,9 +2,11 @@ import:
     - path: ../../../ozone
       transformations:
           - type: Image
-            image: quay.io/ozonedev/ozone:test
+            image: quay.io/ozonedev/ozone:93e5d959338
     - path: ../../../yarn
       transformations:
+          - type: Image
+            image: flokkr/hadoop:3.1
           - type: Add
             path:
                 - spec
@@ -13,7 +15,7 @@ import:
                 - initContainers
             value:
                name: ozone-lib 
-               image: quay.io/ozonedev/ozone:test
+               image: quay.io/ozonedev/ozone:93e5d959338
                args:
                    - cp
                    - /opt/hadoop/share/ozone/lib/*legacy*.jar
@@ -63,3 +65,16 @@ import:
             value:
                configMapRef:
                    name: config
+          - type: Add
+            path:
+              - spec
+              - template
+              - spec
+              - containers
+              - ".*"
+              - env
+            value:
+                - name: CORE-SITE.XML_fs.defaultFS
+                  value: o3fs://bucket1.vol1/
+                - name: CORE-SITE.XML_fs.AbstractFileSystem.o3fs.impl
+                  value: org.apache.hadoop.fs.ozone.OzFs

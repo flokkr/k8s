@@ -23,7 +23,7 @@ spec:
     spec:
       initContainers:
         - name: init
-          image: quay.io/ozonedev/ozone:test
+          image: quay.io/ozonedev/ozone:93e5d959338
           args:
             - ozone
             - om
@@ -39,7 +39,7 @@ spec:
               mountPath: "/data"
       containers:
         - name: om
-          image: quay.io/ozonedev/ozone:test
+          image: quay.io/ozonedev/ozone:93e5d959338
           args:
             - ozone
             - om

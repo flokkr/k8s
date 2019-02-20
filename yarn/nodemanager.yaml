@@ -34,8 +34,6 @@ spec:
           envFrom:
              - configMapRef:
                   name: yarn-config
-             - configMapRef:
-                  name: hdfs-config
           volumeMounts:
             - name: data
               mountPath: /data
