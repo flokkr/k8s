@@ -11,6 +11,10 @@ spec:
       component: datanode
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9880"
+        prometheus.io/path: "/prom"
       labels:
         app: ozone
         component: datanode
