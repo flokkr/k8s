@@ -1,0 +1,10 @@
+type: ozone/prometheus
+transformations:
+ - type: Add
+   trigger:
+      metadata:
+          name: config
+   path:
+    - data
+   value:
+    OZONE-SITE.XML_hdds.prometheus.endpoint.enabled: true
