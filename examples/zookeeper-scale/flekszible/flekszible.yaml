@@ -1,0 +1,7 @@
+source:
+    - path: ../../..
+import:
+    - path: zookeeper
+      transformations:
+          - type: zookeeper/scale
+            replicas: 3

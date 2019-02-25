@@ -1,0 +1,27 @@
+name: zookeeper/scale
+description: Set the number of the zookeeper replicas.
+parameter:
+  - name: replicas
+    type: int
+    default: 1
+    description: Number of the required replicas
+---
+- type: Change
+  path:
+    - spec
+    - replicas
+  pattern: .*
+  replacement: 3
+- type: Change
+  trigger:
+     metadata:
+        name: zookeeper-config
+  path:
+    - data
+    - "zoo.cfg"
+  pattern: .*server.0.*
+  replacement: |-
+    {{range $val := Iterate .replicas}}
+    server.{{.}}=zookeeper-{{.}}.zookeeper:2888:3888
+    {{end}}
+

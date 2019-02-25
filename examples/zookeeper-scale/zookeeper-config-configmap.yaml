@@ -9,9 +9,14 @@ data:
       log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
       log4j.appender.stdout.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n
   zoo.cfg: |-
-    tickTime=2000
-    dataDir=/data/zookeeper
-    clientPort=2181
-    initLimit=5
-    syncLimit=2
-    server.0=zookeeper-0.zookeeper:2888:3888
+      tickTime=2000
+      dataDir=/data/zookeeper
+      clientPort=2181
+      initLimit=5
+      syncLimit=2
+      
+      server.0=zookeeper-0.zookeeper:2888:3888
+      
+      server.1=zookeeper-1.zookeeper:2888:3888
+      
+      server.2=zookeeper-2.zookeeper:2888:3888
