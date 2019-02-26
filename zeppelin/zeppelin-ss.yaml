@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zeppelin
+  labels:
+    app.kubernetes.io/component: zeppelin
+spec:
+  selector:
+    matchLabels:
+      app: zeppelin
+      component: zeppelin
+  serviceName: zeppelin
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: zeppelin
+        component: zeppelin
+    spec:
+      containers:
+      - name: zeppelin
+        image: flokkr/zeppelin
+
