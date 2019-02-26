@@ -1,10 +1,11 @@
-type: ozone/prometheus
-transformations:
- - type: Add
-   trigger:
+name: ozone/prometheus
+description: Enable prometheus monitoring in Ozone
+---
+- type: Add
+  trigger:
       metadata:
           name: config
-   path:
+  path:
     - data
-   value:
+  value:
     OZONE-SITE.XML_hdds.prometheus.endpoint.enabled: true
