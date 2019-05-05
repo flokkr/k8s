@@ -1,0 +1,6 @@
+source:
+  - path: ../../..
+import: 
+  - path: vault-dev/getkeystore
+  - path: vault-dev
+    destination: vault

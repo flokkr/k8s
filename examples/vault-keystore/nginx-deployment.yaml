@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+  annotations: {}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+      annotations: {}
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          env: []
+          envFrom: []
+      initContainers:
+        - name: getkeystore
+          image: elek/sectools
+          #command: ["watch"]
+          #args: ["ls"]
+          command: ["/usr/bin/getkeystore.sh"]
+          env:
+              - name: VAULT_ADDR
+                value: http://vault-0.vault:8200
+              - name: PKI_ROLE
+                value: ozone
