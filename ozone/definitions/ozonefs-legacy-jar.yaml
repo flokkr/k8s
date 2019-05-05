@@ -1,0 +1,39 @@
+name: ozone/legacyjar
+description: Copy ozonefs legacy to the main container
+---
+- type: Add
+  path:
+  - spec
+  - template
+  - spec
+  - containers
+  - "*"
+  - volumeMounts
+  value:
+  - name: ozonefs
+    mountPath: /opt/ozonefs
+- type: Add
+  path:
+  - spec
+  - template
+  - spec
+  - volumes
+  value:
+  - name: ozonefs
+    emptyDir: {}
+- type: Add
+  path:
+  - spec
+  - template
+  - spec
+  - initContainers
+  value:
+    - name: ozonelib-copy
+      image: elek/ozone
+      command:
+        - cp
+        - /opt/ozone/share/lib/ozone/*legacy*.jar
+        - /opt/ozonefs
+      volumeMounts:
+        - name: script
+          mountPath: /opt/getkeystore
