@@ -1,0 +1,43 @@
+- type: Add
+  trigger:
+     metadata:
+        labels:
+           app.kubernetes.io/component: ozone
+  path:
+  - spec
+  - template
+  - spec
+  - containers
+  - "*"
+  - volumeMounts
+  value:
+  - name: data
+    mountPath: /data
+- type: Add
+  trigger:
+     metadata:
+        labels:
+           app.kubernetes.io/component: ozone  
+  path:
+  - spec
+  - template
+  - spec
+  - initContainers
+  - "*"
+  - volumeMounts
+  value:
+  - name: data
+    mountPath: /data
+- type: Add
+  trigger:
+     metadata:
+        labels:
+           app.kubernetes.io/component: ozone
+  path:
+  - spec
+  - template
+  - spec
+  - volumes
+  value:
+  - name: data
+    emptyDir: {}
