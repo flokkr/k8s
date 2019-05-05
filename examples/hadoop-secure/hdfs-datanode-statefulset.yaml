@@ -1,3 +1,4 @@
+
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -15,20 +16,20 @@ spec:
         component: datanode
     spec:
       containers:
-        - name: hdfs-datanode
-          image: flokkr/hadoop
-          args:
-            - hdfs
-            - datanode
-          env:
-            - name: "WAITFOR"
-              value: "hdfs-namenode-0.hdfs-namenode:9820"
-          envFrom:
-            - configMapRef:
-                name: hdfs-config
-      volumes:
-        - name: config
-          configMap:
+      - name: hdfs-datanode
+        image: flokkr/hadoop
+        args:
+        - hdfs
+        - datanode
+        env:
+        - name: WAITFOR
+          value: hdfs-namenode-0.hdfs-namenode:9820
+        envFrom:
+        - configMapRef:
             name: hdfs-config
-        - name: "data"
-          emptyDir: {}
+      volumes:
+      - name: config
+        configMap:
+          name: hdfs-config
+      - name: data
+        emptyDir: {}

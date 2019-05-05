@@ -1,3 +1,4 @@
+
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -15,32 +16,32 @@ spec:
         component: namenode
     spec:
       initContainers:
-        - name: hdfs-init
-          image: flokkr/hadoop
-          args:
-            - hadoop
-            - version
-          env:
-            - name: "ENSURE_NAMENODE_DIR"
-              value: "/data/namenode"
-          envFrom:
-            - configMapRef:
-                name: hdfs-config
-          volumeMounts:
-            - name: "data"
-              mountPath: "/data"
+      - name: hdfs-init
+        image: flokkr/hadoop
+        args:
+        - hadoop
+        - version
+        env:
+        - name: ENSURE_NAMENODE_DIR
+          value: /data/namenode
+        envFrom:
+        - configMapRef:
+            name: hdfs-config
+        volumeMounts:
+        - name: data
+          mountPath: /data
       containers:
-        - name: hdfs-namenode
-          image: flokkr/hadoop
-          args:
-            - hdfs
-            - namenode
-          envFrom:
-            - configMapRef:
-                name: hdfs-config
-          volumeMounts:
-            - name: "data"
-              mountPath: "/data"
+      - name: hdfs-namenode
+        image: flokkr/hadoop
+        args:
+        - hdfs
+        - namenode
+        envFrom:
+        - configMapRef:
+            name: hdfs-config
+        volumeMounts:
+        - name: data
+          mountPath: /data
       volumes:
-        - name: "data"
-          emptyDir: {}
+      - name: data
+        emptyDir: {}
