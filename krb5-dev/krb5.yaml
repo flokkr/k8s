@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: krb5
+spec:
+  clusterIP: None
+  selector:
+    app: krb5
+    component: krb5
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: krb5
+  labels:
+    app: krb5
+    component: krb5
+spec:
+  replicas: 1
+  serviceName: krb5
+  selector:
+    matchLabels:
+      app: krb5
+      component: krb5
+  template:
+    metadata:
+      labels:
+        app: krb5
+        component: krb5
+    spec:
+      containers:
+        - name: krb5
+          image: flokkr/krb5
