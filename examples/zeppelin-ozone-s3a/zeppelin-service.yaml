@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zeppelin
+spec:
+  ports:
+    - port: 8080
+      name: ui
+  clusterIP: None
+  selector:
+    app: zeppelin
+    component: zeppelin

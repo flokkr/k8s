@@ -1,0 +1,7 @@
+source:
+    - path: ../../..
+import:
+    - path: zeppelin
+      transformations:
+       - type: Image
+         image: flokkr/zeppelin:latest

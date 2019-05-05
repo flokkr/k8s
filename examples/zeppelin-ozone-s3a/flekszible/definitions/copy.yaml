@@ -1,0 +1,34 @@
+---
+- type: Add
+  path:
+    - spec
+    - template
+    - spec
+    - initContainers
+  value:
+    - name: copy-hadoop
+      image: flokkr/hadoop:3.1
+      args: ["sudo", "cp","-r","/opt/hadoop","/data"]
+    - name: copy-spark
+      image: flokkr/spark:2.4.0-hadoop3.1
+      args: ["sudo", "cp","-r","/opt/spark","/data"]
+- type: Add
+  path:
+      - spec
+      - template
+      - spec
+      - volumes
+  value:
+    - name: data
+      emptyDir: {} 
+- type: Add
+  path:
+      - spec
+      - template
+      - spec
+      - ".*ontainers"
+      - ".*"
+      - volumeMounts
+  value:
+    - name: data
+      mountPath: /data
