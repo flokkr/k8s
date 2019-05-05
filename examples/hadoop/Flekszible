@@ -1,0 +1,7 @@
+source:
+    - path: ../..
+import:
+    - path: hdfs
+    - path: yarn
+transformations:
+    - type: PublishStatefulSet
