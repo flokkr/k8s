@@ -1,0 +1,4 @@
+source:
+  - path: ../../..
+import:
+  - path: prometheus
