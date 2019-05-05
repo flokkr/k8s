@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: s3g
+  labels:
+    app.kubernetes.io/component: ozone
+spec:
+  selector:
+    matchLabels:
+      app: ozone
+      component: s3g
+  serviceName: s3g
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ozone
+        component: s3g
+    spec:
+      containers:
+        - name: s3g
+          image: quay.io/ozonedev/ozone:fc389fd3a5c
+          args:
+            - ozone
+            - s3g
+          envFrom:
+            - configMapRef:
+                name: config
+          volumeMounts:
+            - name: "data"
+              mountPath: "/data"
+            - name: keytabs
+              mountPath: /etc/security/keytabs
+      initContainers:
+        - name: getkeystore
+          image: elek/sectools
+          command:
+            - /usr/bin/getkeytab.sh
+            - scm
+            - om
+          env:
+            - name: "OUTPUT_DIR"
+              value: "/etc/security/keytabs"
+            - name: "VAULT_ADDR"
+              value: "http://vault-0.vault:8200"
+          volumeMounts:
+            - name: keytabs
+              mountPath: /etc/security/keytabs
+      volumes:
+        - name: "data"
+          emptyDir: {}
+        - name: keytabs
+          emptyDir: {}

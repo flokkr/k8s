@@ -1,0 +1,38 @@
+- type: Add
+  path:
+   - spec
+   - template
+   - spec
+   - initContainers
+  value:
+    - name: getkeystore
+      image: elek/sectools
+      command: 
+        - /usr/bin/getkeytab.sh
+        - scm
+        - om
+      env:
+        - name: OUTPUT_DIR
+          value: /etc/security/keytabs
+        - name: VAULT_ADDR
+          value: http://vault-0.vault:8200
+- type: Add
+  path:
+   - spec
+   - template
+   - spec
+   - ".*ontainers"
+   - ".*"
+   - volumeMounts
+  value:
+        - name: keytabs
+          mountPath: /etc/security/keytabs
+- type: Add
+  path:
+   - spec
+   - template
+   - spec
+   - volumes
+  value:
+    - name: keytabs
+      emptyDir: {}

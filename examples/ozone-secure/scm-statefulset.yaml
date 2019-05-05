@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: scm
+  labels:
+    app.kubernetes.io/component: ozone
+spec:
+  selector:
+    matchLabels:
+      app: ozone
+      component: scm
+  serviceName: scm
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ozone
+        component: scm
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9876"
+        prometheus.io/path: "/prom"
+    spec:
+      initContainers:
+        - name: init
+          image: quay.io/ozonedev/ozone:fc389fd3a5c
+          args:
+            - ozone
+            - scm
+            - --init
+          envFrom:
+            - configMapRef:
+                name: config
+          volumeMounts:
+            - name: "data"
+              mountPath: "/data"
+            - name: keytabs
+              mountPath: /etc/security/keytabs
+        - name: getkeystore
+          image: elek/sectools
+          imagePullPolicy: Always
+          command:
+            - /usr/bin/getkeytab.sh
+            - scm
+          env:
+            - name: "OUTPUT_DIR"
+              value: "/etc/security/keytabs"
+            - name: "VAULT_ADDR"
+              value: "http://vault-0.vault:8200"
+          volumeMounts:
+            - name: keytabs
+              mountPath: /etc/security/keytabs
+      containers:
+        - name: scm
+          image: quay.io/ozonedev/ozone:fc389fd3a5c
+          args:
+            - ozone
+            - scm
+          envFrom:
+            - configMapRef:
+                name: config
+          volumeMounts:
+            - name: "data"
+              mountPath: "/data"
+            - name: keytabs
+              mountPath: /etc/security/keytabs
+      volumes:
+        - name: "data"
+          emptyDir: {}
+        - name: keytabs
+          emptyDir: {}

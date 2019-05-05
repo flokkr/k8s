@@ -1,0 +1,7 @@
+source:
+  - path: ../../..
+import: 
+  - path: ozone
+    transformations:
+        - type: Image
+          image: quay.io/ozonedev/ozone:fc389fd3a5c

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: datanode
+  labels:
+    app.kubernetes.io/component: ozone
+spec:
+  selector:
+    matchLabels:
+      app: ozone
+      component: datanode
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9880"
+        prometheus.io/path: "/prom"
+      labels:
+        app: ozone
+        component: datanode
+    spec:
+      containers:
+        - name: datanode
+          image: quay.io/ozonedev/ozone:fc389fd3a5c
+          args:
+            - ozone
+            - datanode
+          ports:
+            - containerPort: 9870
+              name: rpc
+          envFrom:
+            - configMapRef:
+                name: config
+          volumeMounts:
+            - name: "data"
+              mountPath: "/data"
+            - name: keytabs
+              mountPath: /etc/security/keytabs
+      initContainers:
+        - name: getkeystore
+          image: elek/sectools
+          command:
+            - /usr/bin/getkeytab.sh
+            - scm
+            - om
+          env:
+            - name: "OUTPUT_DIR"
+              value: "/etc/security/keytabs"
+            - name: "VAULT_ADDR"
+              value: "http://vault-0.vault:8200"
+          volumeMounts:
+            - name: keytabs
+              mountPath: /etc/security/keytabs
+      volumes:
+        - name: "data"
+          emptyDir: {}
+        - name: keytabs
+          emptyDir: {}
