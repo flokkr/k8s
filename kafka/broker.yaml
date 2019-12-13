@@ -11,7 +11,7 @@ spec:
      app: kafka
      component: broker
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: kafka-broker
@@ -20,6 +20,10 @@ spec:
   replicas: 1
   updateStrategy:
     type: RollingUpdate
+  selector:
+    matchLabels:
+      app: kafka
+      component: broker
   podManagementPolicy: Parallel
   template:
     metadata:
