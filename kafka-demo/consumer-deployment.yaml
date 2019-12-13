@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kafka-demo
+    component: consumer
+  name: kafka-demo-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-demo
+      component: consumer
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: kafka-demo
+        component: consumer
+    spec:
+      containers:
+      - name: consumer
+        image: flokkr/kafka
+        imagePullPolicy: IfNotPresent
+        command:
+        - bash
+        - -c
+        - /scripts/consumer.sh
+        volumeMounts:
+        - mountPath: /scripts
+          name: scripts
+      volumes:
+      - name: scripts
+        configMap:
+          defaultMode: 0755
+          name: scripts
