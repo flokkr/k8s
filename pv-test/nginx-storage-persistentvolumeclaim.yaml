@@ -10,4 +10,4 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: csi-s3
+#  storageClassName: csi-s3
