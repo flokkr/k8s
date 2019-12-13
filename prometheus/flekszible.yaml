@@ -1,3 +1,0 @@
-description: Prometheus monitoring
-transformations:
-   - type: prometheus/config
