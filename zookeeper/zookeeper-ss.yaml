@@ -11,15 +11,19 @@ spec:
      app: zookeeper
      component: zookeeper
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: zookeeper
 spec:
   serviceName: zookeeper
-  replicas: 3
+  replicas: 1
   updateStrategy:
     type: RollingUpdate
+  selector:
+    matchLabels:
+      app: zookeeper
+      component: zookeeper
   podManagementPolicy: Parallel
   template:
     metadata:

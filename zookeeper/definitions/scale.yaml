@@ -11,7 +11,7 @@ parameter:
     - spec
     - replicas
   pattern: .*
-  replacement: 3
+  replacement: {{.replicas}}
 - type: Change
   trigger:
      metadata:
