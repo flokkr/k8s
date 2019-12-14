@@ -1,6 +1,0 @@
-import:
-  - path: ozone
-    transformations:
-        - type: Image
-          image: elek/ozone:5c61573f503
-        - type: PublishStatefulSet

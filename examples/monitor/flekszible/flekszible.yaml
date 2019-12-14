@@ -1,7 +1,0 @@
-source:
-   - path: ../../../
-import:
-   - path: monitor
-   - path: prometheus
-     transformations:
-       - type: PublishStatefulSet
