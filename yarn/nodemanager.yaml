@@ -15,6 +15,9 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: yarn-nodemanager
+  labels:
+    app: yarn
+    component: nodemanager
 spec:
   serviceName: yarn-nodemanager
   replicas: 3
