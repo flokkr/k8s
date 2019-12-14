@@ -11,7 +11,7 @@ spec:
      app: hdfs
      component: datanode
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: hdfs-datanode
@@ -20,6 +20,10 @@ spec:
   replicas: 3
   updateStrategy:
     type: RollingUpdate
+  selector:
+     matchLabels:
+        app: hdfs
+        component: datanode
   podManagementPolicy: Parallel
   template:
     metadata:

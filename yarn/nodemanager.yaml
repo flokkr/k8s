@@ -11,7 +11,7 @@ spec:
      app: yarn
      component: nodemanager
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: yarn-nodemanager
@@ -21,6 +21,10 @@ spec:
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel
+  selector:
+     matchLabels:
+        app: yarn
+        component: nodemanager
   template:
     metadata:
       labels:

@@ -11,7 +11,7 @@ spec:
      app: hdfs
      component: namenode
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: hdfs-namenode
@@ -21,6 +21,10 @@ spec:
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: Parallel
+  selector:
+     matchLabels:
+        app: hdfs
+        component: namenode
   template:
     metadata:
       labels:
