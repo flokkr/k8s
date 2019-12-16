@@ -4,6 +4,7 @@ metadata:
   name: hdfs-config
 data:
   HDFS-SITE.XML_dfs.namenode.name.dir: "/data/namenode"
+  HDFS-SITE.XML_dfs.datanode.data.dir: "/data/datanode"
   LOG4J.PROPERTIES_log4j.rootLogger: "INFO, stdout"
   LOG4J.PROPERTIES_log4j.appender.stdout: "org.apache.log4j.ConsoleAppender"
   LOG4J.PROPERTIES_log4j.appender.stdout.layout: "org.apache.log4j.PatternLayout"
