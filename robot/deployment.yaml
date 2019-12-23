@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: robot
+  labels:
+    app: robot
+    component: executor
+spec:
+  replicas: 1
+  selector:
+        matchLabels:
+          app: robot
+          component: executor
+  template:
+    metadata:
+      labels:
+        app: robot
+        component: executor
+    spec:
+      containers:
+      - image: flokkr/base:34
+        name: executor
+        env:
+          - name: LAUNCHER_UPDATE
+            value: "true"
+          - name: GIT_CLONE
+            value: http://github.com/flokkr/robot
