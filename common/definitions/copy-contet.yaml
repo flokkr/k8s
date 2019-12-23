@@ -1,0 +1,47 @@
+name: copy-hadoop
+description: copy hadoop directory during the init phase
+parameters:
+    - name: image
+      description: name of the docker image
+      default: flokkr/hadoop
+    - name: source
+      description: directory to copy
+---
+- type: Add
+  path:
+    - spec
+    - template
+    - spec
+    - (initContainers|containers)
+    - "*"
+    - volumeMounts
+  value:
+    - name: hadoop
+      mountPath: /opt/hadoop
+- type: Add
+  path:
+    - spec
+    - template
+    - spec
+    - volumes
+  value:
+    - name: hadoop
+      emptyDir: {}
+- type: Add
+  path:
+    - spec
+    - template
+    - spec
+    - initContainers
+  value:
+    - name: copy-hadoop
+      image: {{.image}}
+      args:
+        - cp
+        - -r
+        - /opt/hadoop/*
+        - /target/
+      volumeMounts:
+        - name: hadoop
+          mountPath: target
+
