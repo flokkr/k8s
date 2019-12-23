@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hdfs-janitor
+spec:
+  selector:
+     matchLabels:
+        app: hdfs
+        component: janitor
+  template:
+    metadata:
+      labels:
+        app: hdfs
+        component: janitor
+    spec:
+      containers:
+        - name: hdfs-janitor
+          image: flokkr/hadoop
+          args: ["/tmp/script/janitor.sh"]
+          env:
+              - name: WAITFOR
+                value: "hdfs-namenode-0.hdfs-namenode:9820"
+          volumeMounts:
+            - name: script
+              mountPath: /tmp/script
+          envFrom:
+             - configMapRef:
+                 name: hdfs-config
+      volumes:
+         - name: script
+           configMap:
+               defaultMode: 0755
+               name: hdfs-janitor
