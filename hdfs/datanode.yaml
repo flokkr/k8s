@@ -31,6 +31,20 @@ spec:
         app: hdfs
         component: datanode
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: component
+                operator: In
+                values:
+                - datanode
+              - key: app
+                operator: In
+                values:
+                - hdfs
+            topologyKey: "kubernetes.io/hostname"    
       containers:
         - name: hdfs-datanode
           image: flokkr/hadoop
@@ -38,6 +52,9 @@ spec:
           env:
               - name: WAITFOR
                 value: "hdfs-namenode-0.hdfs-namenode:9820"
+          volumeMounts:
+          - name: data
+            mountPath: /data
           envFrom:
              - configMapRef:
                   name: hdfs-config
