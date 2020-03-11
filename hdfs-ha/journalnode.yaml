@@ -11,11 +11,15 @@ spec:
      app: hdfs
      component: journalnode
 ---
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: hdfs-journalnode
 spec:
+  selector:
+    matchLabels:
+      app: hdfs
+      component: journalnode
   serviceName: hdfs-journalnode
   replicas: 3
   updateStrategy:
