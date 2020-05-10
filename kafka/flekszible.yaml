@@ -1,3 +1,0 @@
-description: Apache Kafka
-import:
- - path: ../zookeeper
